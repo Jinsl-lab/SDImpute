@@ -21,4 +21,4 @@ The input data of SDImpute is a gene expression matrix, columns and rows represe
 library(SDImpute)
 # An example scRNA-seq dataset, containing 10,166 genes and 425 cells.
 data(data)
-imputed_data<-SDImpute(data,do.nor=TRUE,auto.k=FALSE,k=5,M=15,T=0.5)
+imputed_data<-SDImpute(data,do.nor=TRUE,do.log=FALSE,auto.k=FALSE,k=5,M=15,T=0.5)
