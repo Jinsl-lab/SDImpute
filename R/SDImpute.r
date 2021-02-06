@@ -34,7 +34,8 @@ SDImpute<-function(data,do.nor=TRUE,do.log=TRUE,auto.k=TRUE,criterion="asw",kran
     else{ltpm=data
     }
   }
-
+  ltpm<-nor(do.nor)
+  
   logt<-function(x){
     if(x==TRUE){
       ltpm <- log2(ltpm+1)
