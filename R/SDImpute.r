@@ -25,7 +25,7 @@
 
 SDImpute<-function(data,do.nor=TRUE,do.log=TRUE,auto.k=TRUE,criterion="asw",krange=c(5:15),k=5,M=15,T=0.5){
 
-  cat("Data preprocessing...")
+  message("Data preprocessing...")
   requireNamespace("stats")
   nor<-function(x){
     if(x==TRUE){
@@ -46,7 +46,7 @@ SDImpute<-function(data,do.nor=TRUE,do.log=TRUE,auto.k=TRUE,criterion="asw",kran
   ltpm<-logt(do.log)
 
 
- cat("Identification of dropouts...")
+ message("Identification of dropouts...")
 
   # performing PCA and k-means.
   pca <- prcomp(t(ltpm))
@@ -167,7 +167,7 @@ SDImpute<-function(data,do.nor=TRUE,do.log=TRUE,auto.k=TRUE,criterion="asw",kran
 
 
   #Calculating Gaussian kernel coefficient matrix.
-  cat("Block imputation...")
+  message("Block imputation...")
   g<-pca$x[,1:2]
   dw<-as.matrix(dist(g))
   #dw<-as.matrix(dist(t(x)))#
@@ -226,7 +226,7 @@ SDImpute<-function(data,do.nor=TRUE,do.log=TRUE,auto.k=TRUE,criterion="asw",kran
   colnames(SDImputedata)<-colnames(data)
   rownames(SDImputedata)<-rownames(data)
 
-  cat("Done")
+  message("Done")
   return(SDImputedata)
 
 
