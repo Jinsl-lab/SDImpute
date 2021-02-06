@@ -231,4 +231,4 @@ SDImpute<-function(data,do.nor=TRUE,do.log=TRUE,auto.k=TRUE,criterion="asw",kran
 
 
 }
-
+print("Done")
