@@ -1,7 +1,8 @@
 #' SDImpute: A statistical block imputation method based on cell-level and gene-level information for dropouts
 #'           in single-cell RNA-seq data
 #' @param data  A gene expression matrix,the rows correspond to genes and the columns correspond to cells.
-#' @param do.nor  Logical. If TRUE, the data is Normalized.
+#' @param do.nor  Logical. If TRUE, the data is Normalized by a global-scaling normalization method.
+#' @param do.log  Logical. If TRUE, the data is logarithmic transformation (log2).
 #' @param auto.k  Logical. If TRUE, k is estimated  by either the Calinski Harabasz index  or average silhouette width ;
 #'            If FALSE, the parameter k need to be set manually.
 #' @param criterion  One of "asw" or "ch". Determines whether average silhouette width or Calinski-Harabasz is applied.
@@ -22,18 +23,30 @@
 #' data(data)
 #' imputed_data<-SDImpute(data,do.nor=TRUE,auto.k=FALSE,k=5,M=15,T=0.5)
 
-SDImpute<-function(data,do.nor=TRUE,auto.k=TRUE,criterion="asw",krange=c(5:15),k=5,M=15,T=0.5){
+SDImpute<-function(data,do.nor=TRUE,do.log=TRUE,auto.k=TRUE,criterion="asw",krange=c(5:15),k=5,M=15,T=0.5){
+
+  print("Data preprocessing...")
   requireNamespace("stats")
   nor<-function(x){
     if(x==TRUE){
-      ltpm <- log2(t(t(data)/colSums(data))*1000000+1)
+      ltpm <- t(t(data)/colSums(data))*1000000+1
     }
     else{ltpm=data
     }
   }
 
-  ltpm<-nor(do.nor)
+  logt<-function(x){
+    if(x==TRUE){
+      ltpm <- log2(ltpm+1)
+    }
+    else{ltpm=ltpm
+    }
+  }
 
+  ltpm<-logt(do.log)
+
+
+  print("Identification of dropouts...")
 
   # performing PCA and k-means.
   pca <- prcomp(t(ltpm))
@@ -118,7 +131,7 @@ SDImpute<-function(data,do.nor=TRUE,auto.k=TRUE,criterion="asw",krange=c(5:15),k
       }
     }
   }
-
+  pm[is.na(pm)]<-0
 
   #Calculating dropout probability.
   cvltpm<-labelltpm[2:dim(labelltpm)[1],]
@@ -154,7 +167,7 @@ SDImpute<-function(data,do.nor=TRUE,auto.k=TRUE,criterion="asw",krange=c(5:15),k
 
 
   #Calculating Gaussian kernel coefficient matrix.
-
+  print("Block imputation...")
   g<-pca$x[,1:2]
   dw<-as.matrix(dist(g))
   #dw<-as.matrix(dist(t(x)))#
@@ -218,3 +231,4 @@ SDImpute<-function(data,do.nor=TRUE,auto.k=TRUE,criterion="asw",krange=c(5:15),k
 
 
 }
+
